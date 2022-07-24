@@ -25,6 +25,7 @@ pytest = "^7.0.1"
 black = "^22.1.0"
 flake8 = "^4.0.1"
 coverage = "^6.3.2"
+pre-commit = "^2.19.0"
 pytest-cov = "^3.0.0"
 
 [build-system]
