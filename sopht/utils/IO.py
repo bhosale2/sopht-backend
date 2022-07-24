@@ -447,9 +447,9 @@ class IO:
 
         def generate_field_entry(file_name, field_name, field_type):
             if field_type == "Scalar":
-                entry = f"""<Attribute Name="{field_name}" Active="1" 
+                entry = f"""<Attribute Name="{field_name}" Active="1"
                 AttributeType="Scalar" Center="Node">
-                    <DataItem Dimensions="{grid_size_string}" 
+                    <DataItem Dimensions="{grid_size_string}"
                     NumberType="Float" Precision="{self.precision}" Format="HDF">
                         {file_name}:/Eulerian/{field_type}/{field_name}
                     </DataItem>
@@ -459,9 +459,9 @@ class IO:
             elif field_type == "Vector":
                 entry = ""
                 for idx_dim in range(self.dim):
-                    entry += f"""<Attribute Name="{field_name}_{idx_dim}" 
+                    entry += f"""<Attribute Name="{field_name}_{idx_dim}"
                     Active="1" AttributeType="Scalar" Center="Node">
-                    <DataItem Dimensions="{grid_size_string}" NumberType="Float" 
+                    <DataItem Dimensions="{grid_size_string}" NumberType="Float"
                     Precision="{self.precision}" Format="HDF">
                         {file_name}:/Eulerian/{field_type}/{field_name}_{idx_dim}
                     </DataItem>
@@ -483,11 +483,11 @@ class IO:
             <Time Value="{time}"/>
             <Topology TopologyType="{topology_type}" Dimensions="{grid_size_string}"/>
             <Geometry GeometryType="{geometry_type}">
-                <DataItem Name="Origin" Dimensions="{self.dim}" 
+                <DataItem Name="Origin" Dimensions="{self.dim}"
                 NumberType="Float" Precision="{self.precision}" Format="XML">
                     {origin_string}
                 </DataItem>
-                <DataItem Name="Spacing" Dimensions="{self.dim}" 
+                <DataItem Name="Spacing" Dimensions="{self.dim}"
                 NumberType="Float" Precision="{self.precision}" Format="XML">
                     {dx_string}
                 </DataItem>
@@ -522,9 +522,9 @@ class IO:
             field_grid_size,
             lagrangian_grid_name,
         ):
-            entry = f"""<Attribute Name="{field_name}" Active="1" 
+            entry = f"""<Attribute Name="{field_name}" Active="1"
             AttributeType="{field_type}" Center="Node">
-                <DataItem Dimensions="{field_grid_size}" NumberType="Float" 
+                <DataItem Dimensions="{field_grid_size}" NumberType="Float"
                 Precision="{self.precision}" Format="HDF">
                     {h5_file_name}:/Lagrangian/{lagrangian_grid_name}/{field_type}/{field_name}
                 </DataItem>
@@ -568,13 +568,13 @@ class IO:
 
             if lagrangian_grid_name in self.lagrangian_grid_connection:
                 topology = f"""<Topology TopologyType="Polyline">
-                <DataItem DataType="Int" Dimensions="1    
+                <DataItem DataType="Int" Dimensions="1
                 {lagrangian_grid_size[0]}" Format="HDF" Precision="{self.precision}">
                     {h5_file_name}:/Lagrangian/{lagrangian_grid_name}/Connection
                 </DataItem>
             </Topology>"""
             else:
-                topology = f"""<Topology TopologyType="Polyvertex" 
+                topology = f"""<Topology TopologyType="Polyvertex"
                 NumberOfElements="{lagrangian_grid_size[0]}"/>"""
 
             xdmffile = f"""<?xml version="1.0" ?>
@@ -585,7 +585,7 @@ class IO:
             <Time Value="{time}"/>
             {topology}
             <Geometry GeometryType="{geometry_type}">
-                <DataItem Dimensions="{lagrangian_grid_size_string}" 
+                <DataItem Dimensions="{lagrangian_grid_size_string}"
                 NumberType="Float" Precision="{self.precision}" Format="HDF">
                     {h5_file_name}:/Lagrangian/{lagrangian_grid_name}/Grid
                 </DataItem>
