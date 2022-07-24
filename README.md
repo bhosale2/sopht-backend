@@ -1,2 +1,2 @@
-# SophT-backend
-Scalable One-stop Platform for Hydroelastic Things–backend
+# sopht-backend
+Scalable One-stop Platform for Hydroelastic Things (SOPHT) backend
