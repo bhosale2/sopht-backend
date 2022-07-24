@@ -17,4 +17,4 @@ def get_real_t(precision: str = "single") -> Type:
 def get_test_tol(precision: str = "single") -> Union[np.float32, np.float64]:
     """Return the testing tolerance based on precision."""
     real_t = get_real_t(precision=precision)
-    return real_t(100) * np.finfo(real_t).eps
+    return real_t(1e3) * np.finfo(real_t).eps
