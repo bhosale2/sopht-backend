@@ -3,14 +3,6 @@ name: CI
 
 # Controls when the action will run.
 on: [push, pull_request]
-# Older settings:
-# Triggers the workflow on push request events for the master branch,
-# and pull request events for all branches.
-#on:
-#  push:
-#    branches: [ master ]
-#  pull_request:
-#    branches: [ '**' ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10"]
         os: [ubuntu-latest, macos-latest] #, windows-latest] # Run macos tests if really required, since they charge 10 times more for macos
         include:
           - os: ubuntu-latest
@@ -57,51 +49,12 @@ jobs:
           poetry install
       # Runs a single command using the runners shell
       - name: Welcome message
-        run: echo Hello, world! Welcome PyElastica Build, lets start testing!
+        run: echo Hello, world! Welcome to sopht-backend build, lets start testing!
       # Run style checks (black and flake8)
       - name: Run style checks
         run: |
           make check-codestyle
-      # Test PyElastica using pytest
+      # Test sopht-backend using pytest
       - name: Run tests
         run: |
           make test
-  report-coverage:  # Report coverage from python 3.8 and mac-os. May change later
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        python-version: ["3.8"]
-        os: [macos-latest]
-        include:
-          - os: macos-latest
-            path: ~/Library/Caches/pip
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2.2.2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-      - name: Set up cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ matrix.path }}
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Install dependencies
-        run: |
-          poetry config virtualenvs.in-project true
-          poetry install
-      - name: Run style checks
-        run: |
-          make check-codestyle
-      - name: Test PyElastica using pytest
-        if: startsWith(runner.os, 'macOS')
-        run: |
-          make test_coverage_xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}

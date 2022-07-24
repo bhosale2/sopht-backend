@@ -16,11 +16,3 @@ branch = True
 omit =
     # omit anything in a .local directory anywhere
     */.local/*
-    # omit analytical systems
-    elastica/systems/analytical.py
-    # omit deprecation warning message
-    elastica/_elastica_numpy.py
-    elastica/_elastica_numba.py
-    # omit experimental modules
-    elastica/experimental/*
-	setup.py
