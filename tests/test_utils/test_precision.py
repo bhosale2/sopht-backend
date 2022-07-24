@@ -22,6 +22,6 @@ def test_get_real_t(precision):
 def test_get_test_tol(precision):
     test_tol = get_test_tol(precision)
     if precision == "single":
-        assert test_tol == np.float32(100 * np.finfo(np.float32).eps)
+        assert test_tol == np.float32(1e3 * np.finfo(np.float32).eps)
     elif precision == "double":
-        assert test_tol == np.float64(100 * np.finfo(np.float64).eps)
+        assert test_tol == np.float64(1e3 * np.finfo(np.float64).eps)
