@@ -19,9 +19,7 @@ def gen_advection_flux_conservative_eno3_pyst_kernel_2d(
     )
 
     @ps.kernel
-    # The kernel is tested as a whole and there is no direct way of
-    # testing these pystencil kernels, hence adding no cover
-    def _advection_flux_x_front_conservative_eno3_stencil_2d():  # pragma: no cover
+    def _advection_flux_x_front_conservative_eno3_stencil_2d():
         advection_flux, field, velocity_x = ps.fields(
             f"advection_flux, field, velocity_x : {pyst_dtype}[{grid_info}]"
         )
@@ -46,9 +44,7 @@ def gen_advection_flux_conservative_eno3_pyst_kernel_2d(
     ).compile()
 
     @ps.kernel
-    # The kernel is tested as a whole and there is no direct way of
-    # testing these pystencil kernels, hence adding no cover
-    def _advection_flux_x_back_conservative_eno3_stencil_2d():  # pragma no cover
+    def _advection_flux_x_back_conservative_eno3_stencil_2d():
         advection_flux, field, velocity_x = ps.fields(
             # f"advection_flux, field, velocity_x : {pyst_dtype}[{grid_info}]"
             # This switch is done to avoid the weird slowdown happening here.
@@ -75,9 +71,7 @@ def gen_advection_flux_conservative_eno3_pyst_kernel_2d(
     ).compile()
 
     @ps.kernel
-    # The kernel is tested as a whole and there is no direct way of
-    # testing these pystencil kernels, hence adding no cover
-    def _advection_flux_y_front_conservative_eno3_stencil_2d():  # pragma no cover
+    def _advection_flux_y_front_conservative_eno3_stencil_2d():
         advection_flux, field, velocity_y = ps.fields(
             f"advection_flux, field, velocity_y : {pyst_dtype}[{grid_info}]"
         )
@@ -102,9 +96,7 @@ def gen_advection_flux_conservative_eno3_pyst_kernel_2d(
     ).compile()
 
     @ps.kernel
-    # The kernel is tested as a whole and there is no direct way of
-    # testing these pystencil kernels, hence adding no cover
-    def _advection_flux_y_back_conservative_eno3_stencil_2d():  # pragma no cover
+    def _advection_flux_y_back_conservative_eno3_stencil_2d():
         advection_flux, field, velocity_y = ps.fields(
             f"advection_flux, field, velocity_y : {pyst_dtype}[{grid_info}]"
         )
