@@ -16,7 +16,9 @@ def gen_diffusion_flux_pyst_kernel_3d(
     """3D Diffusion flux kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"

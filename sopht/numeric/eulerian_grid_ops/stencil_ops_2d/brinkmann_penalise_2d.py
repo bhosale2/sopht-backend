@@ -15,7 +15,9 @@ def gen_brinkmann_penalise_pyst_kernel_2d(
     """Brinkmann penalisation 2D kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}" if fixed_grid_size else "2D"
@@ -73,7 +75,9 @@ def gen_brinkmann_penalise_vs_fixed_val_pyst_kernel_2d(
     """Brinkmann penalisation against fixed val, 2D kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}" if fixed_grid_size else "2D"

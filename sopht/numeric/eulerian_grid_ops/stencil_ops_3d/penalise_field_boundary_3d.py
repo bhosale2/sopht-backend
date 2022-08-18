@@ -39,12 +39,14 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     x_front_boundary_slice = ps.make_slice[:, :, :width]
     x_front_boundary_kernel_config = ps.CreateKernelConfig(
         data_type=pyst_dtype,
+        default_number_float=pyst_dtype,
         cpu_openmp=num_threads,
         iteration_slice=x_front_boundary_slice,
     )
     x_back_boundary_slice = ps.make_slice[:, :, -width:]
     x_back_boundary_kernel_config = ps.CreateKernelConfig(
         data_type=pyst_dtype,
+        default_number_float=pyst_dtype,
         cpu_openmp=num_threads,
         iteration_slice=x_back_boundary_slice,
     )
@@ -80,12 +82,14 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     y_front_boundary_slice = ps.make_slice[:, :width, :]
     y_front_boundary_kernel_config = ps.CreateKernelConfig(
         data_type=pyst_dtype,
+        default_number_float=pyst_dtype,
         cpu_openmp=num_threads,
         iteration_slice=y_front_boundary_slice,
     )
     y_back_boundary_slice = ps.make_slice[:, -width:, :]
     y_back_boundary_kernel_config = ps.CreateKernelConfig(
         data_type=pyst_dtype,
+        default_number_float=pyst_dtype,
         cpu_openmp=num_threads,
         iteration_slice=y_back_boundary_slice,
     )
@@ -121,12 +125,14 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     z_front_boundary_slice = ps.make_slice[:width, :, :]
     z_front_boundary_kernel_config = ps.CreateKernelConfig(
         data_type=pyst_dtype,
+        default_number_float=pyst_dtype,
         cpu_openmp=num_threads,
         iteration_slice=z_front_boundary_slice,
     )
     z_back_boundary_slice = ps.make_slice[-width:, :, :]
     z_back_boundary_kernel_config = ps.CreateKernelConfig(
         data_type=pyst_dtype,
+        default_number_float=pyst_dtype,
         cpu_openmp=num_threads,
         iteration_slice=z_back_boundary_slice,
     )

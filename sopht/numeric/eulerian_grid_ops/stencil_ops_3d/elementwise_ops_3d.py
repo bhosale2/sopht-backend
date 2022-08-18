@@ -16,7 +16,9 @@ def gen_elementwise_sum_pyst_kernel_3d(
     """3D elementwise sum kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
 
     if field_type == "scalar":
         grid_info = (
@@ -62,7 +64,9 @@ def gen_set_fixed_val_pyst_kernel_3d(
     """3D set field to fixed value kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
@@ -114,7 +118,9 @@ def gen_elementwise_copy_pyst_kernel_3d(
     # TODO expand docs
     """3D elementwise copy one field to another kernel generator."""
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
@@ -139,7 +145,9 @@ def gen_elementwise_complex_product_pyst_kernel_3d(
     # TODO expand docs
     """3D elementwise complex number product kernel generator."""
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
@@ -218,7 +226,9 @@ def gen_add_fixed_val_pyst_kernel_3d(
     """3D add a fixed value to a field kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"

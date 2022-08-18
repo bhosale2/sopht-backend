@@ -12,7 +12,9 @@ def gen_update_vorticity_from_velocity_forcing_pyst_kernel_3d(
     # TODO expand docs
     """Update vorticity based on velocity forcing in 3D kernel generator."""
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
@@ -128,7 +130,9 @@ def gen_update_vorticity_from_penalised_velocity_pyst_kernel_3d(
     # TODO expand docs
     """Update vorticity based on penalised velocity in 3D kernel generator."""
     pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(data_type=pyst_dtype, cpu_openmp=num_threads)
+    kernel_config = ps.CreateKernelConfig(
+        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
+    )
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"

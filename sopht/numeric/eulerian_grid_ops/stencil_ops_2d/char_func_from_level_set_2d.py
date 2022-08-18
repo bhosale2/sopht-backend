@@ -23,6 +23,7 @@ def gen_char_func_from_level_set_via_sine_heaviside_pyst_kernel_2d(
     )
     kernel_config = ps.CreateKernelConfig(
         data_type=pyst_dtype,
+        default_number_float=pyst_dtype,
         cpu_openmp=num_threads,
     )
     sine_prefactor = np.pi / blend_width
