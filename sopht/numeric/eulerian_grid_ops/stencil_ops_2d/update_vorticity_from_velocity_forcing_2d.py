@@ -1,9 +1,9 @@
 """Kernels for updating vorticity based on velocity forcing in 2D."""
-import numpy as np
-
 import pystencils as ps
 
 import sympy as sp
+
+from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
 
 
 def gen_update_vorticity_from_velocity_forcing_pyst_kernel_2d(
@@ -11,10 +11,8 @@ def gen_update_vorticity_from_velocity_forcing_pyst_kernel_2d(
 ):
     # TODO expand docs
     """Update vorticity based on velocity forcing in 2D kernel generator."""
-    pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
-    )
+    pyst_dtype = get_pyst_dtype(real_t)
+    kernel_config = get_pyst_kernel_config(real_t, num_threads)
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}" if fixed_grid_size else "2D"
@@ -67,10 +65,8 @@ def gen_update_vorticity_from_penalised_velocity_pyst_kernel_2d(
 ):
     # TODO expand docs
     """Update vorticity based on penalised velocity in 2D kernel generator."""
-    pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
-    )
+    pyst_dtype = get_pyst_dtype(real_t)
+    kernel_config = get_pyst_kernel_config(real_t, num_threads)
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}" if fixed_grid_size else "2D"

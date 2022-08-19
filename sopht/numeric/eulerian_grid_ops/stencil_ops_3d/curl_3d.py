@@ -1,6 +1,4 @@
 """Kernels for computing curl in 3D."""
-import numpy as np
-
 import pystencils as ps
 
 from sopht.numeric.eulerian_grid_ops.stencil_ops_3d.elementwise_ops_3d import (
@@ -9,14 +7,14 @@ from sopht.numeric.eulerian_grid_ops.stencil_ops_3d.elementwise_ops_3d import (
 
 import sympy as sp
 
+from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
+
 
 def gen_curl_pyst_kernel_3d(real_t, num_threads=False, fixed_grid_size=False):
     # TODO expand docs
     """3D Curl kernel generator."""
-    pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
-    )
+    pyst_dtype = get_pyst_dtype(real_t)
+    kernel_config = get_pyst_kernel_config(real_t, num_threads)
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"

@@ -5,6 +5,8 @@ import pystencils as ps
 
 import sympy as sp
 
+from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
+
 
 def gen_char_func_from_level_set_via_sine_heaviside_pyst_kernel_2d(
     blend_width,
@@ -17,15 +19,11 @@ def gen_char_func_from_level_set_via_sine_heaviside_pyst_kernel_2d(
     Generate function that computes characteristic function field
     from the level set field, via a smooth sine Heaviside function.
     """
-    pyst_dtype = "float32" if real_t == np.float32 else "float64"
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}" if fixed_grid_size else "2D"
     )
-    kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
-    )
+    pyst_dtype = get_pyst_dtype(real_t)
+    kernel_config = get_pyst_kernel_config(real_t, num_threads)
     sine_prefactor = np.pi / blend_width
 
     @ps.kernel

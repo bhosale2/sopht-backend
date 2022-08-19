@@ -1,19 +1,17 @@
 """Kernels for computing curl of inplane field in 2D."""
-import numpy as np
-
 import pystencils as ps
 
 import sympy as sp
+
+from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
 
 
 def gen_inplane_field_curl_pyst_kernel_2d(
     real_t, num_threads=False, fixed_grid_size=False
 ):
     """2D Inplane field curl kernel generator."""
-    pyst_dtype = "float32" if real_t == np.float32 else "float64"
-    kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype, default_number_float=pyst_dtype, cpu_openmp=num_threads
-    )
+    pyst_dtype = get_pyst_dtype(real_t)
+    kernel_config = get_pyst_kernel_config(real_t, num_threads)
     # we can add dtype checks later
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}" if fixed_grid_size else "2D"

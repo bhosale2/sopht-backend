@@ -5,6 +5,8 @@ import pystencils as ps
 
 import sympy as sp
 
+from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
+
 
 def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     width,
@@ -20,7 +22,7 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     # TODO expand docs
     """3D penalise field boundary kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
-    pyst_dtype = "float32" if real_t == np.float32 else "float64"
+    pyst_dtype = get_pyst_dtype(real_t)
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
         if fixed_grid_size
@@ -37,17 +39,15 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     sine_prefactor = (np.pi / 2) / (width * dx)
 
     x_front_boundary_slice = ps.make_slice[:, :, :width]
-    x_front_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    x_front_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=x_front_boundary_slice,
     )
     x_back_boundary_slice = ps.make_slice[:, :, -width:]
-    x_back_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    x_back_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=x_back_boundary_slice,
     )
 
@@ -80,17 +80,15 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     ).compile()
 
     y_front_boundary_slice = ps.make_slice[:, :width, :]
-    y_front_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    y_front_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=y_front_boundary_slice,
     )
     y_back_boundary_slice = ps.make_slice[:, -width:, :]
-    y_back_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    y_back_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=y_back_boundary_slice,
     )
 
@@ -123,17 +121,15 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     ).compile()
 
     z_front_boundary_slice = ps.make_slice[:width, :, :]
-    z_front_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    z_front_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=z_front_boundary_slice,
     )
     z_back_boundary_slice = ps.make_slice[-width:, :, :]
-    z_back_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    z_back_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=z_back_boundary_slice,
     )
 

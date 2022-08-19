@@ -5,6 +5,8 @@ import pystencils as ps
 
 import sympy as sp
 
+from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
+
 
 def gen_advection_flux_conservative_eno3_pyst_kernel_2d(
     real_t, num_threads=False, fixed_grid_size=False

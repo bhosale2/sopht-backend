@@ -5,6 +5,8 @@ import pystencils as ps
 
 import sympy as sp
 
+from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
+
 
 def gen_penalise_field_boundary_pyst_kernel_2d(
     width,
@@ -17,7 +19,7 @@ def gen_penalise_field_boundary_pyst_kernel_2d(
 ):
     # TODO expand docs
     """2D penalise field boundary kernel generator."""
-    pyst_dtype = "float32" if real_t == np.float32 else "float64"
+    pyst_dtype = get_pyst_dtype(real_t)
     grid_info = (
         f"{fixed_grid_size[0]}, {fixed_grid_size[1]}" if fixed_grid_size else "2D"
     )
@@ -30,17 +32,15 @@ def gen_penalise_field_boundary_pyst_kernel_2d(
     sine_prefactor = (np.pi / 2) / (width * dx)
 
     x_front_boundary_slice = ps.make_slice[:, :width]
-    x_front_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    x_front_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=x_front_boundary_slice,
     )
     x_back_boundary_slice = ps.make_slice[:, -width:]
-    x_back_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    x_back_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=x_back_boundary_slice,
     )
 
@@ -73,17 +73,15 @@ def gen_penalise_field_boundary_pyst_kernel_2d(
     ).compile()
 
     y_front_boundary_slice = ps.make_slice[:width, :]
-    y_front_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    y_front_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=y_front_boundary_slice,
     )
     y_back_boundary_slice = ps.make_slice[-width:, :]
-    y_back_boundary_kernel_config = ps.CreateKernelConfig(
-        data_type=pyst_dtype,
-        default_number_float=pyst_dtype,
-        cpu_openmp=num_threads,
+    y_back_boundary_kernel_config = get_pyst_kernel_config(
+        real_t,
+        num_threads,
         iteration_slice=y_back_boundary_slice,
     )
 
