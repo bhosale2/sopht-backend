@@ -17,31 +17,31 @@ def vorticity_stretching_timestep_euler_forward_reference(
     new_vorticity_field[0, 1:-1, 1:-1, 1:-1] = vorticity_field[
         0, 1:-1, 1:-1, 1:-1
     ] + dt_by_2_dx * (
-        vorticity_field[0, 1:-1, 1:-1, 1:-1]
+        vorticity_field[2, 1:-1, 1:-1, 1:-1]
         * (velocity_field[0, 2:, 1:-1, 1:-1] - velocity_field[0, :-2, 1:-1, 1:-1])
         + vorticity_field[1, 1:-1, 1:-1, 1:-1]
         * (velocity_field[0, 1:-1, 2:, 1:-1] - velocity_field[0, 1:-1, :-2, 1:-1])
-        + vorticity_field[2, 1:-1, 1:-1, 1:-1]
+        + vorticity_field[0, 1:-1, 1:-1, 1:-1]
         * (velocity_field[0, 1:-1, 1:-1, 2:] - velocity_field[0, 1:-1, 1:-1, :-2])
     )
     new_vorticity_field[1, 1:-1, 1:-1, 1:-1] = vorticity_field[
         1, 1:-1, 1:-1, 1:-1
     ] + dt_by_2_dx * (
-        vorticity_field[0, 1:-1, 1:-1, 1:-1]
+        vorticity_field[2, 1:-1, 1:-1, 1:-1]
         * (velocity_field[1, 2:, 1:-1, 1:-1] - velocity_field[1, :-2, 1:-1, 1:-1])
         + vorticity_field[1, 1:-1, 1:-1, 1:-1]
         * (velocity_field[1, 1:-1, 2:, 1:-1] - velocity_field[1, 1:-1, :-2, 1:-1])
-        + vorticity_field[2, 1:-1, 1:-1, 1:-1]
+        + vorticity_field[0, 1:-1, 1:-1, 1:-1]
         * (velocity_field[1, 1:-1, 1:-1, 2:] - velocity_field[1, 1:-1, 1:-1, :-2])
     )
     new_vorticity_field[2, 1:-1, 1:-1, 1:-1] = vorticity_field[
         2, 1:-1, 1:-1, 1:-1
     ] + dt_by_2_dx * (
-        vorticity_field[0, 1:-1, 1:-1, 1:-1]
+        vorticity_field[2, 1:-1, 1:-1, 1:-1]
         * (velocity_field[2, 2:, 1:-1, 1:-1] - velocity_field[2, :-2, 1:-1, 1:-1])
         + vorticity_field[1, 1:-1, 1:-1, 1:-1]
         * (velocity_field[2, 1:-1, 2:, 1:-1] - velocity_field[2, 1:-1, :-2, 1:-1])
-        + vorticity_field[2, 1:-1, 1:-1, 1:-1]
+        + vorticity_field[0, 1:-1, 1:-1, 1:-1]
         * (velocity_field[2, 1:-1, 1:-1, 2:] - velocity_field[2, 1:-1, 1:-1, :-2])
     )
     return new_vorticity_field

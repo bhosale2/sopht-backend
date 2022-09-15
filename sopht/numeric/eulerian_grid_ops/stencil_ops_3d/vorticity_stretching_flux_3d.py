@@ -60,25 +60,25 @@ def gen_vorticity_stretching_flux_pyst_kernel_3d(
         _vorticity_stretching_flux_single_comp_kernel_3d(
             vorticity_stretching_flux_field_comp=vorticity_stretching_flux_field[0],
             velocity_field_comp=velocity_field[0],
-            vorticity_field_z=vorticity_field[0],
+            vorticity_field_x=vorticity_field[0],
             vorticity_field_y=vorticity_field[1],
-            vorticity_field_x=vorticity_field[2],
+            vorticity_field_z=vorticity_field[2],
             prefactor=prefactor,
         )
         _vorticity_stretching_flux_single_comp_kernel_3d(
             vorticity_stretching_flux_field_comp=vorticity_stretching_flux_field[1],
             velocity_field_comp=velocity_field[1],
-            vorticity_field_z=vorticity_field[0],
+            vorticity_field_x=vorticity_field[0],
             vorticity_field_y=vorticity_field[1],
-            vorticity_field_x=vorticity_field[2],
+            vorticity_field_z=vorticity_field[2],
             prefactor=prefactor,
         )
         _vorticity_stretching_flux_single_comp_kernel_3d(
             vorticity_stretching_flux_field_comp=vorticity_stretching_flux_field[2],
             velocity_field_comp=velocity_field[2],
-            vorticity_field_z=vorticity_field[0],
+            vorticity_field_x=vorticity_field[0],
             vorticity_field_y=vorticity_field[1],
-            vorticity_field_x=vorticity_field[2],
+            vorticity_field_z=vorticity_field[2],
             prefactor=prefactor,
         )
 

@@ -13,27 +13,27 @@ from sopht.utils.precision import get_real_t, get_test_tol
 def vorticity_stretching_flux_reference(vorticity_field, velocity_field, prefactor):
     vorticity_stretching_flux_field = np.zeros_like(vorticity_field)
     vorticity_stretching_flux_field[0, 1:-1, 1:-1, 1:-1] = prefactor * (
-        vorticity_field[0, 1:-1, 1:-1, 1:-1]
+        vorticity_field[2, 1:-1, 1:-1, 1:-1]
         * (velocity_field[0, 2:, 1:-1, 1:-1] - velocity_field[0, :-2, 1:-1, 1:-1])
         + vorticity_field[1, 1:-1, 1:-1, 1:-1]
         * (velocity_field[0, 1:-1, 2:, 1:-1] - velocity_field[0, 1:-1, :-2, 1:-1])
-        + vorticity_field[2, 1:-1, 1:-1, 1:-1]
+        + vorticity_field[0, 1:-1, 1:-1, 1:-1]
         * (velocity_field[0, 1:-1, 1:-1, 2:] - velocity_field[0, 1:-1, 1:-1, :-2])
     )
     vorticity_stretching_flux_field[1, 1:-1, 1:-1, 1:-1] = prefactor * (
-        vorticity_field[0, 1:-1, 1:-1, 1:-1]
+        vorticity_field[2, 1:-1, 1:-1, 1:-1]
         * (velocity_field[1, 2:, 1:-1, 1:-1] - velocity_field[1, :-2, 1:-1, 1:-1])
         + vorticity_field[1, 1:-1, 1:-1, 1:-1]
         * (velocity_field[1, 1:-1, 2:, 1:-1] - velocity_field[1, 1:-1, :-2, 1:-1])
-        + vorticity_field[2, 1:-1, 1:-1, 1:-1]
+        + vorticity_field[0, 1:-1, 1:-1, 1:-1]
         * (velocity_field[1, 1:-1, 1:-1, 2:] - velocity_field[1, 1:-1, 1:-1, :-2])
     )
     vorticity_stretching_flux_field[2, 1:-1, 1:-1, 1:-1] = prefactor * (
-        vorticity_field[0, 1:-1, 1:-1, 1:-1]
+        vorticity_field[2, 1:-1, 1:-1, 1:-1]
         * (velocity_field[2, 2:, 1:-1, 1:-1] - velocity_field[2, :-2, 1:-1, 1:-1])
         + vorticity_field[1, 1:-1, 1:-1, 1:-1]
         * (velocity_field[2, 1:-1, 2:, 1:-1] - velocity_field[2, 1:-1, :-2, 1:-1])
-        + vorticity_field[2, 1:-1, 1:-1, 1:-1]
+        + vorticity_field[0, 1:-1, 1:-1, 1:-1]
         * (velocity_field[2, 1:-1, 1:-1, 2:] - velocity_field[2, 1:-1, 1:-1, :-2])
     )
     return vorticity_stretching_flux_field
