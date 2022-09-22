@@ -22,16 +22,24 @@ def gen_penalise_field_boundary_pyst_kernel_3d(  # noqa: C901
     # TODO expand docs
     """3D penalise field boundary kernel generator."""
     assert width >= 0 and isinstance(width, int), "invalid zone width"
+    assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     if width == 0:
+        penalise_field_boundary_pyst_kernel_3d = None
         # bypass option to prevent penalisation, done this way since by
         # default to avoid artifacts one must use penalisation...
-        def penalise_field_boundary_pyst_kernel_3d(field):
-            pass
+        if field_type == "scalar":
+
+            def penalise_field_boundary_pyst_kernel_3d(field):
+                pass
+
+        elif field_type == "vector":
+
+            def penalise_field_boundary_pyst_kernel_3d(vector_field):
+                pass
 
         return penalise_field_boundary_pyst_kernel_3d
 
     else:
-        assert field_type == "scalar" or field_type == "vector", "Invalid field type"
         pyst_dtype = get_pyst_dtype(real_t)
         grid_info = (
             f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
