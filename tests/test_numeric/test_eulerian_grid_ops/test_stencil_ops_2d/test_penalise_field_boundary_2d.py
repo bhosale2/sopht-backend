@@ -50,7 +50,7 @@ class PenaliseFieldBoundarySolution:
             self.grid_coord_shift, 1 - self.grid_coord_shift, n_samples
         ).astype(real_t)
         y = x.copy()
-        self.x_grid_field, self.y_grid_field = np.meshgrid(x, y, indexing="ij")
+        self.y_grid_field, self.x_grid_field = np.meshgrid(y, x, indexing="ij")
         self.ref_penalised_field = self.ref_field.copy()
         penalise_field_boundary_reference(
             self.ref_penalised_field,

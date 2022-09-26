@@ -68,8 +68,8 @@ class PenaliseFieldBoundarySolution:
         ).astype(real_t)
         y = x.copy()
         z = x.copy()
-        self.x_grid_field, self.y_grid_field, self.z_grid_field = np.meshgrid(
-            x, y, z, indexing="ij"
+        self.z_grid_field, self.y_grid_field, self.x_grid_field = np.meshgrid(
+            z, y, x, indexing="ij"
         )
         self.ref_penalised_field = self.ref_field.copy()
         penalise_field_boundary_reference_3d(
