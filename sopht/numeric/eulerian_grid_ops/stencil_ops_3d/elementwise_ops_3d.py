@@ -258,3 +258,60 @@ def gen_add_fixed_val_pyst_kernel_3d(
             )
 
         return vector_field_add_fixed_val_pyst_kernel_3d
+
+
+def gen_elementwise_saxpby_pyst_kernel_3d(
+    real_t,
+    num_threads=False,
+    fixed_grid_size=False,
+    field_type="scalar",
+):
+    # TODO expand docs
+    """3D elementwise saxpby (s = a * x + b * y) kernel generator."""
+    assert field_type == "scalar" or field_type == "vector", "Invalid field type"
+    pyst_dtype = get_pyst_dtype(real_t)
+    kernel_config = get_pyst_kernel_config(real_t, num_threads)
+
+    if field_type == "scalar":
+        grid_info = (
+            f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
+            if fixed_grid_size
+            else "3D"
+        )
+
+        @ps.kernel
+        def _elementwise_saxpby_stencil_3d():
+            sum_field, field_1, field_2 = ps.fields(
+                f"sum_field, field_1, field_2 : {pyst_dtype}[{grid_info}]"
+            )
+            field_1_prefac, field_2_prefac = sp.symbols(
+                "field_1_prefac, field_2_prefac"
+            )
+            sum_field[0, 0, 0] @= (
+                field_1_prefac * field_1[0, 0, 0] + field_2_prefac * field_2[0, 0, 0]
+            )
+
+    elif field_type == "vector":
+        grid_info = (
+            f"3, {fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
+            if fixed_grid_size
+            else "4D"
+        )
+
+        @ps.kernel
+        def _elementwise_saxpby_stencil_3d():
+            sum_field, field_1, field_2 = ps.fields(
+                f"sum_field, field_1, field_2 : {pyst_dtype}[{grid_info}]"
+            )
+            field_1_prefac, field_2_prefac = sp.symbols(
+                "field_1_prefac, field_2_prefac"
+            )
+            sum_field[0, 0, 0, 0] @= (
+                field_1_prefac * field_1[0, 0, 0, 0]
+                + field_2_prefac * field_2[0, 0, 0, 0]
+            )
+
+    elementwise_saxpby_pyst_kernel_3d = ps.create_kernel(
+        _elementwise_saxpby_stencil_3d, config=kernel_config
+    ).compile()
+    return elementwise_saxpby_pyst_kernel_3d

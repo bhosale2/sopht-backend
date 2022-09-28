@@ -11,6 +11,7 @@ from sopht.numeric.eulerian_grid_ops import (
     gen_elementwise_sum_pyst_kernel_2d,
     gen_set_fixed_val_at_boundaries_pyst_kernel_2d,
     gen_set_fixed_val_pyst_kernel_2d,
+    gen_elementwise_saxpby_pyst_kernel_2d,
 )
 from sopht.utils.precision import get_real_t
 
@@ -199,3 +200,55 @@ def test_vector_field_add_fixed_val_pyst_kernel_2d(n_values, precision):
     np.testing.assert_allclose(field[0], 3)
     # 1 + 3 = 4
     np.testing.assert_allclose(field[1], 4)
+
+
+@pytest.mark.parametrize("precision", ["single", "double"])
+@pytest.mark.parametrize("n_values", [16])
+def test_elementwise_saxpby_pyst_kernel_2d(n_values, precision):
+    real_t = get_real_t(precision)
+    elementwise_saxpby_pyst_kernel = gen_elementwise_saxpby_pyst_kernel_2d(
+        real_t=real_t,
+        fixed_grid_size=(n_values, n_values),
+        num_threads=psutil.cpu_count(logical=False),
+        field_type="scalar",
+    )
+    field_1 = 2 * np.ones((n_values, n_values), dtype=real_t)
+    field_2 = 3 * np.ones((n_values, n_values), dtype=real_t)
+    prefac_1 = real_t(2)
+    prefac_2 = real_t(3)
+    sum_field = np.zeros_like(field_1)
+    elementwise_saxpby_pyst_kernel(
+        sum_field=sum_field,
+        field_1=field_1,
+        field_2=field_2,
+        field_1_prefac=prefac_1,
+        field_2_prefac=prefac_2,
+    )
+    # 2 * 2 + 3 * 3 = 13
+    np.testing.assert_allclose(sum_field, 13)
+
+
+@pytest.mark.parametrize("precision", ["single", "double"])
+@pytest.mark.parametrize("n_values", [16])
+def test_vector_field_elementwise_saxpby_pyst_kernel_2d(n_values, precision):
+    real_t = get_real_t(precision)
+    elementwise_saxpby_pyst_kernel = gen_elementwise_saxpby_pyst_kernel_2d(
+        real_t=real_t,
+        fixed_grid_size=(n_values, n_values),
+        num_threads=psutil.cpu_count(logical=False),
+        field_type="vector",
+    )
+    field_1 = 2 * np.ones((2, n_values, n_values), dtype=real_t)
+    field_2 = 3 * np.ones((2, n_values, n_values), dtype=real_t)
+    prefac_1 = real_t(2)
+    prefac_2 = real_t(3)
+    sum_field = np.zeros_like(field_1)
+    elementwise_saxpby_pyst_kernel(
+        sum_field=sum_field,
+        field_1=field_1,
+        field_2=field_2,
+        field_1_prefac=prefac_1,
+        field_2_prefac=prefac_2,
+    )
+    # 2 * 2 + 3 * 3 = 13
+    np.testing.assert_allclose(sum_field, 13)
