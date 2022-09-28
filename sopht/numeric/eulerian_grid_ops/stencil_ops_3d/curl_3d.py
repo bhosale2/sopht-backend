@@ -74,6 +74,7 @@ def gen_curl_pyst_kernel_3d(real_t, num_threads=False, fixed_grid_size=False):
         real_t=real_t,
         width=boundary_width,
         num_threads=num_threads,
+        field_type="vector",
     )
 
     def curl_pyst_kernel_3d(curl, field, prefactor):
@@ -98,8 +99,6 @@ def gen_curl_pyst_kernel_3d(real_t, num_threads=False, fixed_grid_size=False):
         )
         # set boundary unaffected points to 0
         # TODO need one sided corrections?
-        set_fixed_val_at_boundaries_3d(field=curl[0], fixed_val=0)
-        set_fixed_val_at_boundaries_3d(field=curl[1], fixed_val=0)
-        set_fixed_val_at_boundaries_3d(field=curl[2], fixed_val=0)
+        set_fixed_val_at_boundaries_3d(vector_field=curl, fixed_vals=[0, 0, 0])
 
     return curl_pyst_kernel_3d

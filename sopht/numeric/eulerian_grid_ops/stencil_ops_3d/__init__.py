@@ -27,4 +27,5 @@ from .update_vorticity_from_velocity_forcing_3d import (
 from .vorticity_stretching_flux_3d import gen_vorticity_stretching_flux_pyst_kernel_3d
 from .vorticity_stretching_timestep_3d import (
     gen_vorticity_stretching_timestep_euler_forward_pyst_kernel_3d,
+    gen_vorticity_stretching_timestep_ssprk3_pyst_kernel_3d,
 )
