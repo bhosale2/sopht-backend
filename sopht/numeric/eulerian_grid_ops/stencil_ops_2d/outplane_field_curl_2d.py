@@ -11,7 +11,10 @@ from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_confi
 
 
 def gen_outplane_field_curl_pyst_kernel_2d(
-    real_t, num_threads=False, fixed_grid_size=False
+    real_t,
+    num_threads=False,
+    fixed_grid_size=False,
+    reset_ghost_zone=True,
 ):
     """2D Outplane field curl kernel generator."""
     pyst_dtype = get_pyst_dtype(real_t)
@@ -43,14 +46,6 @@ def gen_outplane_field_curl_pyst_kernel_2d(
         _outplane_field_curl_y_stencil_2d, config=kernel_config
     ).compile()
 
-    # to set boundary zone = 0
-    boundary_width = 1
-    set_fixed_val_at_boundaries_2d = gen_set_fixed_val_at_boundaries_pyst_kernel_2d(
-        real_t=real_t,
-        width=boundary_width,
-        num_threads=num_threads,
-    )
-
     def outplane_field_curl_pyst_kernel_2d(curl, field, prefactor):
         """Outplane field curl in 2D.
 
@@ -65,9 +60,33 @@ def gen_outplane_field_curl_pyst_kernel_2d(
         _outplane_field_curl_y_pyst_kernel_2d(
             curl_y=curl[1], field=field, prefactor=prefactor
         )
-        # set boundary unaffected points to 0
-        # TODO need one sided corrections?
-        set_fixed_val_at_boundaries_2d(field=curl[0], fixed_val=0)
-        set_fixed_val_at_boundaries_2d(field=curl[1], fixed_val=0)
 
-    return outplane_field_curl_pyst_kernel_2d
+    if not reset_ghost_zone:
+        return outplane_field_curl_pyst_kernel_2d
+    else:
+        # to set boundary zone = 0
+        boundary_width = 1
+        set_fixed_val_at_boundaries_2d = gen_set_fixed_val_at_boundaries_pyst_kernel_2d(
+            real_t=real_t,
+            width=boundary_width,
+            num_threads=num_threads,
+        )
+
+        def outplane_field_curl_with_ghost_zone_reset_pyst_kernel_2d(
+            curl, field, prefactor
+        ):
+            """Outplane field curl in 2D, with resetting of ghost zone.
+
+            Computes curl of outplane 2D vector field (field)
+            into vector 2D inplane field (curl_x, curl_y).
+            Used for psi ---> velocity
+            Assumes curl field is (2, n, n).
+            """
+            outplane_field_curl_pyst_kernel_2d(curl, field, prefactor)
+
+            # set boundary unaffected points to 0
+            # TODO need one sided corrections?
+            set_fixed_val_at_boundaries_2d(field=curl[0], fixed_val=0)
+            set_fixed_val_at_boundaries_2d(field=curl[1], fixed_val=0)
+
+        return outplane_field_curl_with_ghost_zone_reset_pyst_kernel_2d
