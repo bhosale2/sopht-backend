@@ -145,6 +145,7 @@ def test_set_fixed_val_at_boundaries_2d(n_values, precision):
         real_t=real_t,
         width=width,
         num_threads=psutil.cpu_count(logical=False),
+        field_type="scalar",
     )
     field = np.ones((n_values, n_values), dtype=real_t)
     fixed_val = real_t(3)
@@ -156,6 +157,31 @@ def test_set_fixed_val_at_boundaries_2d(n_values, precision):
     np.testing.assert_allclose(field[-width:, :], 3)
     np.testing.assert_allclose(field[:, :width], 3)
     np.testing.assert_allclose(field[:, -width:], 3)
+
+
+@pytest.mark.parametrize("precision", ["single", "double"])
+@pytest.mark.parametrize("n_values", [16])
+def test_vector_field_set_fixed_val_at_boundaries_2d(n_values, precision):
+    real_t = get_real_t(precision)
+    width = 2
+    dim = 2
+    set_fixed_val_at_boundaries = gen_set_fixed_val_at_boundaries_pyst_kernel_2d(
+        real_t=real_t,
+        width=width,
+        num_threads=psutil.cpu_count(logical=False),
+        field_type="vector",
+    )
+    field = np.ones((dim, n_values, n_values), dtype=real_t)
+    fixed_vals = [2, 3]
+    set_fixed_val_at_boundaries(
+        vector_field=field,
+        fixed_vals=fixed_vals,
+    )
+    for axis in range(dim):
+        np.testing.assert_allclose(field[axis, :width, :], fixed_vals[axis])
+        np.testing.assert_allclose(field[axis, -width:, :], fixed_vals[axis])
+        np.testing.assert_allclose(field[axis, :, :width], fixed_vals[axis])
+        np.testing.assert_allclose(field[axis, :, -width:], fixed_vals[axis])
 
 
 @pytest.mark.parametrize("precision", ["single", "double"])

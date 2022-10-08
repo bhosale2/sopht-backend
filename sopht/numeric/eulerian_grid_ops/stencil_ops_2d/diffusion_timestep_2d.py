@@ -4,7 +4,6 @@ from sopht.numeric.eulerian_grid_ops.stencil_ops_2d.diffusion_flux_2d import (
 )
 from sopht.numeric.eulerian_grid_ops.stencil_ops_2d.elementwise_ops_2d import (
     gen_elementwise_sum_pyst_kernel_2d,
-    gen_set_fixed_val_pyst_kernel_2d,
 )
 
 
@@ -16,11 +15,6 @@ def gen_diffusion_timestep_euler_forward_pyst_kernel_2d(
     # TODO expand docs
     """2D Diffusion Euler forward timestep generator."""
     elementwise_sum_pyst_kernel_2d = gen_elementwise_sum_pyst_kernel_2d(
-        real_t=real_t,
-        fixed_grid_size=fixed_grid_size,
-        num_threads=num_threads,
-    )
-    set_fixed_val_pyst_kernel_2d = gen_set_fixed_val_pyst_kernel_2d(
         real_t=real_t,
         fixed_grid_size=fixed_grid_size,
         num_threads=num_threads,
@@ -39,7 +33,6 @@ def gen_diffusion_timestep_euler_forward_pyst_kernel_2d(
         Performs an inplace diffusion timestep in 2D using Euler forward,
         for a 2D field (n, n).
         """
-        set_fixed_val_pyst_kernel_2d(field=diffusion_flux, fixed_val=0)
         diffusion_flux_kernel_2d(
             diffusion_flux=diffusion_flux,
             field=field,

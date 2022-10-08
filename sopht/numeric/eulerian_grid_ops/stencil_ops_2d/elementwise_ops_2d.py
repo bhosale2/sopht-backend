@@ -175,26 +175,57 @@ def gen_set_fixed_val_at_boundaries_pyst_kernel_2d(
     real_t,
     width,
     num_threads=False,
+    field_type="scalar",
 ):
     # TODO expand docs
     """2D set field to fixed value at boundaries kernel generator."""
+    assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     assert width > 0 and isinstance(width, int), "invalid zone width"
     set_fixed_val_kernel_2d = gen_set_fixed_val_pyst_kernel_2d(
-        real_t=real_t, num_threads=num_threads
+        real_t=real_t,
+        num_threads=num_threads,
+        field_type=field_type,
     )
 
-    def set_fixed_val_at_boundaries_pyst_kernel_2d(field, fixed_val):
-        """Set field to fixed value at boundaries.
+    if field_type == "scalar":
 
-        Set a 2D scalar field to a fixed value at boundaries in zone: width,
-        used for clearing boundary noise.
-        """
-        set_fixed_val_kernel_2d(field=field[:width, :], fixed_val=fixed_val)
-        set_fixed_val_kernel_2d(field=field[-width:, :], fixed_val=fixed_val)
-        set_fixed_val_kernel_2d(field=field[:, :width], fixed_val=fixed_val)
-        set_fixed_val_kernel_2d(field=field[:, -width:], fixed_val=fixed_val)
+        def set_fixed_val_at_boundaries_pyst_kernel_2d(field, fixed_val):
+            """Set field to fixed value at boundaries.
 
-    return set_fixed_val_at_boundaries_pyst_kernel_2d
+            Set a 2D scalar field to a fixed value at boundaries in zone: width,
+            used for clearing boundary noise.
+            """
+            set_fixed_val_kernel_2d(field=field[:width, :], fixed_val=fixed_val)
+            set_fixed_val_kernel_2d(field=field[-width:, :], fixed_val=fixed_val)
+            set_fixed_val_kernel_2d(field=field[:, :width], fixed_val=fixed_val)
+            set_fixed_val_kernel_2d(field=field[:, -width:], fixed_val=fixed_val)
+
+        return set_fixed_val_at_boundaries_pyst_kernel_2d
+
+    elif field_type == "vector":
+
+        def vector_field_set_fixed_val_at_boundaries_pyst_kernel_2d(
+            vector_field, fixed_vals
+        ):
+            """Set field to fixed value at boundaries.
+
+            Set a 2D vector field to a fixed value at boundaries in zone: width,
+            used for clearing boundary noise.
+            """
+            set_fixed_val_kernel_2d(
+                vector_field=vector_field[:, :width, :], fixed_vals=fixed_vals
+            )
+            set_fixed_val_kernel_2d(
+                vector_field=vector_field[:, -width:, :], fixed_vals=fixed_vals
+            )
+            set_fixed_val_kernel_2d(
+                vector_field=vector_field[:, :, :width], fixed_vals=fixed_vals
+            )
+            set_fixed_val_kernel_2d(
+                vector_field=vector_field[:, :, -width:], fixed_vals=fixed_vals
+            )
+
+        return vector_field_set_fixed_val_at_boundaries_pyst_kernel_2d
 
 
 def gen_add_fixed_val_pyst_kernel_2d(
