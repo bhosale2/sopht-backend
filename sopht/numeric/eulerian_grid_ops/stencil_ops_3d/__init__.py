@@ -18,6 +18,7 @@ from .elementwise_ops_3d import (
     gen_set_fixed_val_at_boundaries_pyst_kernel_3d,
     gen_set_fixed_val_pyst_kernel_3d,
     gen_elementwise_saxpby_pyst_kernel_3d,
+    gen_elementwise_cross_product_pyst_kernel_3d,
 )
 from .penalise_field_boundary_3d import gen_penalise_field_boundary_pyst_kernel_3d
 from .update_vorticity_from_velocity_forcing_3d import (

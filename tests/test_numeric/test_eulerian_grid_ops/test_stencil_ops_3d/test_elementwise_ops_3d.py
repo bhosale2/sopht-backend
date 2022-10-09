@@ -12,6 +12,7 @@ from sopht.numeric.eulerian_grid_ops import (
     gen_set_fixed_val_at_boundaries_pyst_kernel_3d,
     gen_set_fixed_val_pyst_kernel_3d,
     gen_elementwise_saxpby_pyst_kernel_3d,
+    gen_elementwise_cross_product_pyst_kernel_3d,
 )
 from sopht.utils.precision import get_real_t
 
@@ -284,3 +285,33 @@ def test_vector_field_elementwise_saxpby_pyst_kernel_3d(n_values, precision):
     )
     # 2 * 2 + 3 * 3 = 13
     np.testing.assert_allclose(sum_field, 13)
+
+
+@pytest.mark.parametrize("precision", ["single", "double"])
+@pytest.mark.parametrize("n_values", [16])
+def test_elementwise_cross_product_pyst_kernel_3d(n_values, precision):
+    dim = 3
+    real_t = get_real_t(precision)
+    elementwise_cross_product_pyst_kernel = (
+        gen_elementwise_cross_product_pyst_kernel_3d(
+            real_t=real_t,
+            fixed_grid_size=(n_values, n_values, n_values),
+            num_threads=psutil.cpu_count(logical=False),
+        )
+    )
+    field_1 = np.zeros((dim, n_values, n_values, n_values), dtype=real_t)
+    field_1 += np.array([1.0, 2.0, 3.0]).reshape(dim, 1, 1, 1)
+    field_2 = np.zeros((dim, n_values, n_values, n_values), dtype=real_t)
+    field_2 += np.array([4.0, 5.0, 6.0]).reshape(dim, 1, 1, 1)
+    result_field = np.zeros_like(field_1)
+    elementwise_cross_product_pyst_kernel(
+        result_field=result_field,
+        field_1=field_1,
+        field_2=field_2,
+    )
+    # 2 * 6 - 3 * 5 = -3
+    np.testing.assert_allclose(result_field[0], -3.0)
+    # 3 * 4 - 1 * 6 = 6
+    np.testing.assert_allclose(result_field[1], 6.0)
+    # 1 * 5 - 2 * 4 = -3
+    np.testing.assert_allclose(result_field[2], -3.0)
