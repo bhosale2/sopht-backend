@@ -67,10 +67,6 @@ class CurlSolution:
         self.ref_curl[0] = self.ref_curl_x
         self.ref_curl[1] = self.ref_curl_y
         self.ref_curl[2] = self.ref_curl_z
-        # pystencils vector field version takes (n, n, n, 3),
-        # can be confirmed that this only generates a reference and no copy
-        self.transposed_ref_field = np.transpose(self.ref_field, axes=(1, 2, 3, 0))
-        self.transposed_ref_curl = np.transpose(self.ref_curl, axes=(1, 2, 3, 0))
 
     @property
     def ref_rhs(self):
@@ -89,14 +85,20 @@ class CurlSolution:
 
 @pytest.mark.parametrize("precision", ["single", "double"])
 @pytest.mark.parametrize("n_values", [16])
-def test_curl_3d(n_values, precision):
+@pytest.mark.parametrize("reset_ghost_zone", [True, False])
+def test_curl_3d(n_values, precision, reset_ghost_zone):
     real_t = get_real_t(precision)
     solution = CurlSolution(n_values, precision)
-    curl = np.ones_like(solution.ref_curl)
+    curl = (
+        np.ones_like(solution.ref_curl)
+        if reset_ghost_zone
+        else np.zeros_like(solution.ref_curl)
+    )
     curl_pyst_kernel_3d = gen_curl_pyst_kernel_3d(
         real_t=real_t,
         fixed_grid_size=(n_values, n_values, n_values),
         num_threads=psutil.cpu_count(logical=False),
+        reset_ghost_zone=reset_ghost_zone,
     )
     curl_pyst_kernel_3d(
         curl=curl,

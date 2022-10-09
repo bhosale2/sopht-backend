@@ -1,16 +1,15 @@
 """Kernels for computing curl in 3D."""
 import pystencils as ps
-
+import sympy as sp
 from sopht.numeric.eulerian_grid_ops.stencil_ops_3d.elementwise_ops_3d import (
     gen_set_fixed_val_at_boundaries_pyst_kernel_3d,
 )
-
-import sympy as sp
-
 from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
 
 
-def gen_curl_pyst_kernel_3d(real_t, num_threads=False, fixed_grid_size=False):
+def gen_curl_pyst_kernel_3d(
+    real_t, num_threads=False, fixed_grid_size=False, reset_ghost_zone=True
+):
     # TODO expand docs
     """3D Curl kernel generator."""
     pyst_dtype = get_pyst_dtype(real_t)
@@ -68,15 +67,6 @@ def gen_curl_pyst_kernel_3d(real_t, num_threads=False, fixed_grid_size=False):
         _curl_z_comp_stencil_3d, config=kernel_config
     ).compile()
 
-    # to set boundary zone = 0
-    boundary_width = 1
-    set_fixed_val_at_boundaries_3d = gen_set_fixed_val_at_boundaries_pyst_kernel_3d(
-        real_t=real_t,
-        width=boundary_width,
-        num_threads=num_threads,
-        field_type="vector",
-    )
-
     def curl_pyst_kernel_3d(curl, field, prefactor):
         """Curl in 3D.
 
@@ -97,8 +87,31 @@ def gen_curl_pyst_kernel_3d(real_t, num_threads=False, fixed_grid_size=False):
         _curl_z_comp_3d(
             curl_z=curl[2], field_y=field[1], field_x=field[0], prefactor=prefactor
         )
-        # set boundary unaffected points to 0
-        # TODO need one sided corrections?
-        set_fixed_val_at_boundaries_3d(vector_field=curl, fixed_vals=[0, 0, 0])
 
-    return curl_pyst_kernel_3d
+    if not reset_ghost_zone:
+        return curl_pyst_kernel_3d
+    else:
+        # to set boundary zone = 0
+        boundary_width = 1
+        set_fixed_val_at_boundaries_3d = gen_set_fixed_val_at_boundaries_pyst_kernel_3d(
+            real_t=real_t,
+            width=boundary_width,
+            num_threads=num_threads,
+            field_type="vector",
+        )
+
+        def curl_with_ghost_zone_reset_pyst_kernel_3d(curl, field, prefactor):
+            """Curl in 3D, with resetting of ghost zone
+
+            Computes curl (3D vector field) essentially vector
+            Laplacian for a 3D vector field
+            assumes shape of fields (3, n, n, n)
+            # Assumes field is (3, n, n, n) and dx = dy = dz
+            """
+            curl_pyst_kernel_3d(curl, field, prefactor)
+
+            # set boundary unaffected points to 0
+            # TODO need one sided corrections?
+            set_fixed_val_at_boundaries_3d(vector_field=curl, fixed_vals=[0, 0, 0])
+
+        return curl_with_ghost_zone_reset_pyst_kernel_3d

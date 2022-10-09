@@ -4,7 +4,6 @@ from sopht.numeric.eulerian_grid_ops.stencil_ops_3d.diffusion_flux_3d import (
 )
 from sopht.numeric.eulerian_grid_ops.stencil_ops_3d.elementwise_ops_3d import (
     gen_elementwise_sum_pyst_kernel_3d,
-    gen_set_fixed_val_pyst_kernel_3d,
 )
 
 
@@ -18,11 +17,6 @@ def gen_diffusion_timestep_euler_forward_pyst_kernel_3d(
     """3D Diffusion euler forward timestep kernel generator."""
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
     elementwise_sum_pyst_kernel_3d = gen_elementwise_sum_pyst_kernel_3d(
-        real_t=real_t,
-        fixed_grid_size=fixed_grid_size,
-        num_threads=num_threads,
-    )
-    set_fixed_val_pyst_kernel_3d = gen_set_fixed_val_pyst_kernel_3d(
         real_t=real_t,
         fixed_grid_size=fixed_grid_size,
         num_threads=num_threads,
@@ -41,7 +35,6 @@ def gen_diffusion_timestep_euler_forward_pyst_kernel_3d(
         Performs an inplace diffusion timestep in 3D using Euler forward,
         for a 3D field (n, n, n).
         """
-        set_fixed_val_pyst_kernel_3d(field=diffusion_flux, fixed_val=0)
         diffusion_flux_kernel_3d(
             diffusion_flux=diffusion_flux,
             field=field,

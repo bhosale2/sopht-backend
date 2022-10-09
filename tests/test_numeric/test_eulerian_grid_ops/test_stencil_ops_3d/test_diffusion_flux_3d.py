@@ -78,15 +78,21 @@ class DiffusionFluxSolution:
 
 @pytest.mark.parametrize("precision", ["single", "double"])
 @pytest.mark.parametrize("n_values", [16])
-def test_diffusion_flux_3d(n_values, precision):
+@pytest.mark.parametrize("reset_ghost_zone", [True, False])
+def test_diffusion_flux_3d(n_values, precision, reset_ghost_zone):
     real_t = get_real_t(precision)
     solution = DiffusionFluxSolution(n_values, precision)
-    diffusion_flux = np.zeros_like(solution.ref_diffusion_flux)
+    diffusion_flux = (
+        np.ones_like(solution.ref_diffusion_flux)
+        if reset_ghost_zone
+        else np.zeros_like(solution.ref_diffusion_flux)
+    )
     diffusion_flux_pyst_openmp_kernel_3d = gen_diffusion_flux_pyst_kernel_3d(
         real_t=real_t,
         fixed_grid_size=(n_values, n_values, n_values),
         num_threads=psutil.cpu_count(logical=False),
         field_type="scalar",
+        reset_ghost_zone=reset_ghost_zone,
     )
     diffusion_flux_pyst_openmp_kernel_3d(
         diffusion_flux=diffusion_flux,
@@ -98,17 +104,21 @@ def test_diffusion_flux_3d(n_values, precision):
 
 @pytest.mark.parametrize("precision", ["single", "double"])
 @pytest.mark.parametrize("n_values", [16])
-def test_vector_field_diffusion_flux_3d(n_values, precision):
+@pytest.mark.parametrize("reset_ghost_zone", [True, False])
+def test_vector_field_diffusion_flux_3d(n_values, precision, reset_ghost_zone):
     real_t = get_real_t(precision)
     solution = DiffusionFluxSolution(n_values, precision)
-    vector_field_diffusion_flux = np.zeros_like(
-        solution.ref_vector_field_diffusion_flux
+    vector_field_diffusion_flux = (
+        np.ones_like(solution.ref_vector_field_diffusion_flux)
+        if reset_ghost_zone
+        else np.zeros_like(solution.ref_vector_field_diffusion_flux)
     )
     vector_field_diffusion_flux_pyst_kernel_3d = gen_diffusion_flux_pyst_kernel_3d(
         real_t=real_t,
         fixed_grid_size=(n_values, n_values, n_values),
         num_threads=psutil.cpu_count(logical=False),
         field_type="vector",
+        reset_ghost_zone=reset_ghost_zone,
     )
     vector_field_diffusion_flux_pyst_kernel_3d(
         vector_field_diffusion_flux=vector_field_diffusion_flux,
