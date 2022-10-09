@@ -351,3 +351,60 @@ def gen_elementwise_saxpby_pyst_kernel_3d(
         _elementwise_saxpby_stencil_3d, config=kernel_config
     ).compile()
     return elementwise_saxpby_pyst_kernel_3d
+
+
+def gen_elementwise_cross_product_pyst_kernel_3d(
+    real_t,
+    num_threads=False,
+    fixed_grid_size=False,
+):
+    # TODO expand docs
+    """3D elementwise cross product kernel generator."""
+    pyst_dtype = get_pyst_dtype(real_t)
+    kernel_config = get_pyst_kernel_config(real_t, num_threads)
+    grid_info = (
+        f"{fixed_grid_size[0]}, {fixed_grid_size[1]}, {fixed_grid_size[2]}"
+        if fixed_grid_size
+        else "3D"
+    )
+
+    @ps.kernel
+    def _elementwise_cross_product_single_axis_stencil_3d():
+        result_field_i, field_1_j, field_1_k, field_2_j, field_2_k = ps.fields(
+            f"result_field_i, field_1_j, field_1_k, field_2_j, field_2_k : {pyst_dtype}[{grid_info}]"
+        )
+        result_field_i[0, 0, 0] @= (
+            field_1_j[0, 0, 0] * field_2_k[0, 0, 0]
+            - field_2_j[0, 0, 0] * field_1_k[0, 0, 0]
+        )
+
+    elementwise_cross_product_single_axis_kernel_3d = ps.create_kernel(
+        _elementwise_cross_product_single_axis_stencil_3d, config=kernel_config
+    ).compile()
+
+    def elementwise_cross_product_pyst_kernel_3d(result_field, field_1, field_2):
+        """Elementwise cross product of 2 3D vector fields"""
+        # Assumes fields are (3, n, n, n)
+        elementwise_cross_product_single_axis_kernel_3d(
+            result_field_i=result_field[0],
+            field_1_j=field_1[1],
+            field_1_k=field_1[2],
+            field_2_j=field_2[1],
+            field_2_k=field_2[2],
+        )
+        elementwise_cross_product_single_axis_kernel_3d(
+            result_field_i=result_field[1],
+            field_1_j=field_1[2],
+            field_1_k=field_1[0],
+            field_2_j=field_2[2],
+            field_2_k=field_2[0],
+        )
+        elementwise_cross_product_single_axis_kernel_3d(
+            result_field_i=result_field[2],
+            field_1_j=field_1[0],
+            field_1_k=field_1[1],
+            field_2_j=field_2[0],
+            field_2_k=field_2[1],
+        )
+
+    return elementwise_cross_product_pyst_kernel_3d
