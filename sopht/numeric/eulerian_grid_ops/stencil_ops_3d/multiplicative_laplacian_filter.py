@@ -3,15 +3,15 @@ import pystencils as ps
 from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_config
 
 
-def gen_additive_laplacian_filter_kernel_3d(
+def gen_multiplicative_laplacian_filter_kernel_3d(
     real_t,
     num_threads=False,
     fixed_grid_size=False,
     field_type="scalar",
 ):
     """
-    Additive laplacian filter kernel generator. Based on the field type filter kernels for both scalar and vectorial
-    field can be constructed. One dimensional laplacian filter applied on the field in 3d.
+    Multiplicative laplacian filter kernel generator. Based on the field type filter kernels for both scalar and
+    vectorial field can be constructed. One dimensional laplacian filter applied on the field in 3d.
 
     Notes
     -----
