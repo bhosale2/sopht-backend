@@ -56,8 +56,8 @@ class VorticityStretchingFluxSolution:
 
     def check_equals(self, vorticity_stretching_flux_field):
         np.testing.assert_allclose(
-            self.ref_vorticity_stretching_flux_field[:, 1:-1, 1:-1, 1:-1],
-            vorticity_stretching_flux_field[:, 1:-1, 1:-1, 1:-1],
+            self.ref_vorticity_stretching_flux_field,
+            vorticity_stretching_flux_field,
             atol=self.test_tol,
         )
 

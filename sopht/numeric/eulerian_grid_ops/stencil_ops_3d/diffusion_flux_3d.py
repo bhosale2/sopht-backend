@@ -53,7 +53,7 @@ def gen_diffusion_flux_pyst_kernel_3d(
         set_fixed_val_at_boundaries_3d = gen_set_fixed_val_at_boundaries_pyst_kernel_3d(
             real_t=real_t,
             width=boundary_width,
-            # complexity of this operation is O(N), hence setting serial version
+            # complexity of this operation is O(N^2), hence setting serial version
             num_threads=False,
             field_type="scalar",
         )

@@ -236,31 +236,10 @@ class AdvectionSolution:
                 real_t=real_t,
             )
 
-    @property
-    def ref_rhs(self):
-        return self.ref_advection_flux
-
-    def get(self):
-        return (
-            self.ref_field,
-            self.ref_velocity_x,
-            self.ref_velocity_y,
-            self.ref_velocity_z,
-            self.inv_dx,
-        )
-
     def check_equals(self, advection_flux):
         np.testing.assert_allclose(
-            self.ref_advection_flux[
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
-            advection_flux[
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
+            self.ref_advection_flux,
+            advection_flux,
             atol=self.test_tol,
         )
 

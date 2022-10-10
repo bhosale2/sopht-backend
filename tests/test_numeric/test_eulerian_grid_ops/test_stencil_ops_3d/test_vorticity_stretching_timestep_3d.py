@@ -85,8 +85,8 @@ class VorticityStretchingTimestepSolution:
 
     def check_equals(self, new_vorticity_field):
         np.testing.assert_allclose(
-            self.ref_new_vorticity_field[:, 1:-1, 1:-1, 1:-1],
-            new_vorticity_field[:, 1:-1, 1:-1, 1:-1],
+            self.ref_new_vorticity_field,
+            new_vorticity_field,
             atol=self.test_tol,
         )
 

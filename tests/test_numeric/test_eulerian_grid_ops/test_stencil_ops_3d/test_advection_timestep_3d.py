@@ -76,31 +76,15 @@ class AdvectionTimestepEulerForwardSolution:
 
     def check_equals(self, new_field):
         np.testing.assert_allclose(
-            self.ref_new_field[
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
-            new_field[
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
+            self.ref_new_field,
+            new_field,
             atol=self.test_tol,
         )
 
     def check_vector_field_equals(self, new_vector_field):
         np.testing.assert_allclose(
-            self.ref_new_vector_field[
-                ...,
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
-            new_vector_field[
-                ...,
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
+            self.ref_new_vector_field,
+            new_vector_field,
             atol=self.test_tol,
         )
 
