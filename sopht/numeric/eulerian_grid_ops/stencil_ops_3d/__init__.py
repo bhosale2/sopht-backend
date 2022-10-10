@@ -30,3 +30,4 @@ from .vorticity_stretching_timestep_3d import (
     gen_vorticity_stretching_timestep_euler_forward_pyst_kernel_3d,
     gen_vorticity_stretching_timestep_ssprk3_pyst_kernel_3d,
 )
+from .divergence_3d import gen_divergence_pyst_kernel_3d
