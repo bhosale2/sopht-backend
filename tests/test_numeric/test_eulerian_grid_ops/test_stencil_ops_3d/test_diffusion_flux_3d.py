@@ -63,15 +63,15 @@ class DiffusionFluxSolution:
 
     def check_equals(self, diffusion_flux):
         np.testing.assert_allclose(
-            self.ref_diffusion_flux[1:-1, 1:-1, 1:-1],
-            diffusion_flux[1:-1, 1:-1, 1:-1],
+            self.ref_diffusion_flux,
+            diffusion_flux,
             atol=self.test_tol,
         )
 
     def check_vector_field_equals(self, vector_field_diffusion_flux):
         np.testing.assert_allclose(
-            self.ref_vector_field_diffusion_flux[..., 1:-1, 1:-1, 1:-1],
-            vector_field_diffusion_flux[..., 1:-1, 1:-1, 1:-1],
+            self.ref_vector_field_diffusion_flux,
+            vector_field_diffusion_flux,
             atol=self.test_tol,
         )
 

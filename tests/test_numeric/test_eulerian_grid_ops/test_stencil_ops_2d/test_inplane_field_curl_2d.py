@@ -35,17 +35,8 @@ class InplaneCurlSolution:
             self.ref_field_x, self.ref_field_y, self.prefactor
         )
 
-    @property
-    def ref_rhs(self):
-        return self.ref_curl
-
-    def get(self):
-        return (self.ref_field_x, self.ref_field_y, self.prefactor)
-
     def check_equals(self, curl):
-        np.testing.assert_allclose(
-            self.ref_curl[1:-1, 1:-1], curl[1:-1, 1:-1], atol=self.test_tol
-        )
+        np.testing.assert_allclose(self.ref_curl, curl, atol=self.test_tol)
 
 
 @pytest.mark.parametrize("precision", ["single", "double"])

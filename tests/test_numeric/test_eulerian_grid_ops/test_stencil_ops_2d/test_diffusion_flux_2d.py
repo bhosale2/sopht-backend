@@ -34,17 +34,10 @@ class DiffusionFluxSolution:
             real_t=real_t,
         )
 
-    @property
-    def ref_rhs(self):
-        return self.ref_diffusion_flux
-
-    def get(self):
-        return (self.ref_field, self.prefactor)
-
     def check_equals(self, diffusion_flux):
         np.testing.assert_allclose(
-            self.ref_diffusion_flux[1:-1, 1:-1],
-            diffusion_flux[1:-1, 1:-1],
+            self.ref_diffusion_flux,
+            diffusion_flux,
             atol=self.test_tol,
         )
 

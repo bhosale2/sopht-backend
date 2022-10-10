@@ -68,13 +68,6 @@ class CurlSolution:
         self.ref_curl[1] = self.ref_curl_y
         self.ref_curl[2] = self.ref_curl_z
 
-    @property
-    def ref_rhs(self):
-        return (self.ref_curl_x, self.ref_curl_y, self.ref_curl_z)
-
-    def get(self):
-        return (self.ref_field_x, self.ref_field_y, self.ref_field_z, self.prefactor)
-
     def check_field_equals(self, curl):
         np.testing.assert_allclose(
             self.ref_curl,

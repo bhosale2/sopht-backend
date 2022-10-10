@@ -55,14 +55,8 @@ class AdvectionTimestepSolution:
 
     def check_equals(self, new_field):
         np.testing.assert_allclose(
-            self.ref_new_field[
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
-            new_field[
-                self.kernel_width : -self.kernel_width,
-                self.kernel_width : -self.kernel_width,
-            ],
+            self.ref_new_field,
+            new_field,
             atol=self.test_tol,
         )
 
