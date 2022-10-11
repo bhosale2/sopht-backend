@@ -10,7 +10,7 @@ from sopht.utils.pyst_kernel_config import get_pyst_dtype, get_pyst_kernel_confi
 from typing import Union, Tuple, Type
 
 
-def gen_multiplicative_laplacian_filter_kernel_3d(
+def gen_laplacian_filter_kernel_3d(
     filter_order: int,
     filter_flux_buffer: np.ndarray,
     field_buffer: np.ndarray,
@@ -18,9 +18,10 @@ def gen_multiplicative_laplacian_filter_kernel_3d(
     num_threads: Union[bool, int] = False,
     fixed_grid_size: Union[bool, Tuple] = False,
     field_type: str = "scalar",
+    filter_type: str = "multiplicative",
 ):
     """
-    Multiplicative laplacian filter kernel generator. Based on the field type
+    Laplacian filter kernel generator. Based on the field type
     filter kernels for both scalar and vectorial field can be constructed.
     One dimensional laplacian filter applied on the field in 3D.
 
@@ -37,6 +38,9 @@ def gen_multiplicative_laplacian_filter_kernel_3d(
 
     assert filter_order >= 0 and isinstance(filter_order, int), "Invalid filter order"
     assert field_type == "scalar" or field_type == "vector", "Invalid field type"
+    supported_filter_types = ["multiplicative", "convolution"]
+    if filter_type not in supported_filter_types:
+        raise ValueError("Invalid filter type")
     pyst_dtype = get_pyst_dtype(real_t)
     kernel_config = get_pyst_kernel_config(real_t, num_threads)
     # we can add dtype checks later
@@ -101,9 +105,34 @@ def gen_multiplicative_laplacian_filter_kernel_3d(
         field_type="scalar",
     )
 
-    def scalar_field_filter_kernel_3d(scalar_field):
+    def scalar_field_multiplicative_filter_kernel_3d(scalar_field):
         """
-        Applies laplacian filter on any scalar field.
+        Applies multiplicative Laplacian filter on any scalar field.
+        """
+        set_fixed_val_at_boundaries_3d(field=filter_flux_buffer, fixed_val=0)
+        elementwise_copy_3d(field=field_buffer, rhs_field=scalar_field)
+        for _ in range(filter_order):
+            # Laplacian filter in x direction
+            laplacian_filter_3d_x(filter_flux=filter_flux_buffer, field=field_buffer)
+            elementwise_copy_3d(field=field_buffer, rhs_field=filter_flux_buffer)
+            # Laplacian filter in y direction
+            laplacian_filter_3d_y(filter_flux=filter_flux_buffer, field=field_buffer)
+            elementwise_copy_3d(field=field_buffer, rhs_field=filter_flux_buffer)
+            # Laplacian filter in z direction
+            laplacian_filter_3d_z(filter_flux=filter_flux_buffer, field=field_buffer)
+            elementwise_copy_3d(field=field_buffer, rhs_field=filter_flux_buffer)
+
+        elementwise_saxpby_3d(
+            sum_field=scalar_field,
+            field_1=scalar_field,
+            field_1_prefac=1.0,
+            field_2=filter_flux_buffer,
+            field_2_prefac=-1.0,
+        )
+
+    def scalar_field_convolution_filter_kernel_3d(scalar_field):
+        """
+        Applies convolution Laplacian filter on any scalar field.
         """
         set_fixed_val_at_boundaries_3d(field=filter_flux_buffer, fixed_val=0)
 
@@ -146,6 +175,11 @@ def gen_multiplicative_laplacian_filter_kernel_3d(
             field_2_prefac=-1.0,
         )
 
+    scalar_field_filter_kernel_3d = None
+    if filter_type == "multiplicative":
+        scalar_field_filter_kernel_3d = scalar_field_multiplicative_filter_kernel_3d
+    elif filter_type == "convolution":
+        scalar_field_filter_kernel_3d = scalar_field_convolution_filter_kernel_3d
     # Depending on the field type return the relevant filter implementation
     if field_type == "scalar":
         return scalar_field_filter_kernel_3d
