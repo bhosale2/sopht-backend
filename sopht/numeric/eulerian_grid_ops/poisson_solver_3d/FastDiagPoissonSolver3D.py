@@ -138,15 +138,15 @@ class FastDiagPoissonSolver3D:
         # transform to spectral space ("forward transform")
         # hit last x index
         self.spectral_field_buffer[...] = np.tensordot(
-            self.eig_vecs_x, rhs_field, axes=(1, 2)
+            rhs_field, self.inv_of_eig_vecs_x, axes=(2, 1)
         )
         # hit middle y index
         self.spectral_field_buffer[...] = np.tensordot(
-            self.eig_vecs_y, self.spectral_field_buffer, axes=(1, 1)
+            self.inv_of_eig_vecs_y, self.spectral_field_buffer, axes=(1, 1)
         )
         # hit first z index
         self.spectral_field_buffer[...] = np.tensordot(
-            self.eig_vecs_z, self.spectral_field_buffer, axes=(1, 0)
+            self.inv_of_eig_vecs_z, self.spectral_field_buffer, axes=(1, 0)
         )
 
         # convolution (elementwise) in spectral space
@@ -159,7 +159,7 @@ class FastDiagPoissonSolver3D:
         # transform to physical space ("backward transform")
         # hit last x index
         self.spectral_field_buffer[...] = np.tensordot(
-            self.eig_vecs_x, self.spectral_field_buffer, axes=(1, 2)
+            self.spectral_field_buffer, self.eig_vecs_x, axes=(2, 1)
         )
         # hit middle y index
         self.spectral_field_buffer[...] = np.tensordot(
