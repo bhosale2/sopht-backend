@@ -141,8 +141,11 @@ class FastDiagPoissonSolver3D:
             rhs_field, self.inv_of_eig_vecs_x, axes=(2, 1)
         )
         # hit middle y index
-        self.spectral_field_buffer[...] = np.tensordot(
-            self.inv_of_eig_vecs_y, self.spectral_field_buffer, axes=(1, 1)
+        self.spectral_field_buffer[...] = np.transpose(
+            np.tensordot(
+                self.inv_of_eig_vecs_y, self.spectral_field_buffer, axes=(1, 1)
+            ),
+            axes=(1, 0, 2),
         )
         # hit first z index
         self.spectral_field_buffer[...] = np.tensordot(
@@ -162,8 +165,9 @@ class FastDiagPoissonSolver3D:
             self.spectral_field_buffer, self.eig_vecs_x, axes=(2, 1)
         )
         # hit middle y index
-        self.spectral_field_buffer[...] = np.tensordot(
-            self.eig_vecs_y, self.spectral_field_buffer, axes=(1, 1)
+        self.spectral_field_buffer[...] = np.transpose(
+            np.tensordot(self.eig_vecs_y, self.spectral_field_buffer, axes=(1, 1)),
+            axes=(1, 0, 2),
         )
         # hit first z index
         solution_field[...] = np.tensordot(

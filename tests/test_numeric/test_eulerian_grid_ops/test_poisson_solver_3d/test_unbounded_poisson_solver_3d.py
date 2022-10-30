@@ -196,8 +196,8 @@ def test_unbounded_poisson_solve_neumann_fast_diag_3d(n_values, precision):
 
     error_field = solution_field - correct_solution_field
     linf_norm_error = np.amax(np.fabs(error_field))
-    # check error less than 0.5%
-    error_tol = real_t(5e-3)
+    # check error less than 0.01%
+    error_tol = real_t(1e-4)
     assert linf_norm_error <= error_tol
 
 
@@ -238,6 +238,6 @@ def test_unbounded_poisson_solve_vector_field_neumann_fast_diag_3d(n_values, pre
 
     error_field = solution_vector_field - correct_solution_vector_field
     linf_norm_error = np.amax(np.fabs(error_field))
-    # check error less than 0.5%
-    error_tol = real_t(5e-3)
+    # check error less than 0.01%
+    error_tol = real_t(1e-4)
     assert linf_norm_error <= error_tol
