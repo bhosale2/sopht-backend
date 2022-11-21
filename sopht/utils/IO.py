@@ -177,6 +177,20 @@ class IO:
 
     def save(self, h5_file_name, time=0.0):  # noqa: C901
         """
+        This is a wrapper function to call _save function.
+
+        Attributes
+        ----------
+        h5_file_name: str
+            String containing name of the hdf5 file.
+        time: real_dtype
+            Time at which the fields are saved.
+        """
+
+        self._save(h5_file_name, time)
+
+    def _save(self, h5_file_name, time=0.0):  # noqa: C901
+        """
         Save added fields to hdf5 file.
 
         Attributes
